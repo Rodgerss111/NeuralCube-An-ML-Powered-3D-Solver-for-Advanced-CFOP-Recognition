@@ -30,7 +30,20 @@ print("Initializing F2L Neural Network Training, Sir...")
 
 # Resolve paths from this file so execution works from any working directory.
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DATASET_PATH = PROJECT_ROOT / 'data' / 'neuralcube_f2l_dataset.csv'
+DATASET_CANDIDATES = [
+    PROJECT_ROOT / 'data' / 'neuralcube_f2l_dataset.csv',
+    PROJECT_ROOT / 'Utilities' / 'data' / 'neuralcube_f2l_dataset.csv',
+    PROJECT_ROOT / 'Utilities' / 'data_generators' / 'neuralcube_f2l_dataset.csv',
+]
+
+DATASET_PATH = next((path for path in DATASET_CANDIDATES if path.exists()), None)
+if DATASET_PATH is None:
+    searched_paths = "\n".join(str(path) for path in DATASET_CANDIDATES)
+    raise FileNotFoundError(
+        "Could not find neuralcube_f2l_dataset.csv. Checked:\n"
+        f"{searched_paths}"
+    )
+
 LABEL_MAP_PATH = Path(__file__).resolve().parent / 'f2l_label_map.json'
 WEB_MODEL_PATH = Path(__file__).resolve().parent / 'web_model_f2l'
 

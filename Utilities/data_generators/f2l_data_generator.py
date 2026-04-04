@@ -1,6 +1,7 @@
 import csv
 import os
 import random
+from pathlib import Path
 
 try:
     import pycuber as pc
@@ -50,7 +51,11 @@ CASES = {
     "F2L_38": "R U R' U' R U2 R' U' R U R'",
     "F2L_39": "R U' R' U F' U' F",
     "F2L_40": "R U R' U' R U' R' U d R' U' R",
-    "F2L_41": "R U' R' d R' U2 R U R' U2 R"
+    "F2L_41": "R U' R' d R' U2 R U R' U2 R",
+    # EXTRACTION CASES: AI sees a trapped piece and outputs the command to free it.
+    "ACTION_EXTRACT_RIGHT": "R U' R'",  # Setup puts piece in bottom-right slot
+    "ACTION_EXTRACT_FRONT": "F' U F"    # Setup puts piece in bottom-front slot
+    
 }
 
 # Supports both color initials (w,y,r,o,g,b) and face initials (u,d,r,l,f,b)
@@ -82,35 +87,44 @@ def flatten_cube(cube):
                 flattened.append(COLOR_MAP[color_key])
     return flattened
 
-def generate_dataset(num_samples_per_case=500):
+def generate_dataset(num_samples_per_case=1500):
     dataset = []
-
     total_cases = len(CASES)
-    for index, (case_id, solve_alg) in enumerate(CASES.items(), start=1):
-        # Handle the solved state without applying an algorithm
+    
+    for index, (case_id, alg) in enumerate(CASES.items(), start=1):
         if case_id == "F2L_0_SOLVED":
             setup_alg = pc.Formula("")
         else:
-            setup_alg = pc.Formula(solve_alg).reverse()
+            setup_alg = pc.Formula(alg).reverse()
         
-        for _ in range(num_samples_per_case):
+        # 1. OPTIMIZATION: Calculate the 4 perfect spatial states exactly ONCE.
+        base_permutations = []
+        for rotation in ["", "y", "y2", "y'"]:
             cube = pc.Cube() 
             
-            # 1. Apply the reverse algorithm to create the F2L case
+            # Apply the F2L problem
             cube(setup_alg)
             
-            # 3. Flatten for the ML Input Tensor
-            features = flatten_cube(cube)
-            dataset.append(features + [case_id])
-
-        print(f"Processed {index}/{total_cases} cases ({case_id})")
+            # Rotate the entire cube to shift the slot colors
+            if rotation:
+                cube(rotation)
             
+            features = flatten_cube(cube)
+            base_permutations.append(features + [case_id])
+
+        # 2. DUPLICATION: Copy those perfect states in memory to fill the dataset
+        for _ in range(num_samples_per_case):
+            dataset.extend(base_permutations)
+
+        # Because the math is done instantly, this print will now fire immediately!
+        print(f"Processed {index}/{total_cases} cases ({case_id})", flush=True)
+                
     return dataset
 
 def save_dataset(num_samples_per_case=1000, output_filename="neuralcube_f2l_dataset.csv"):
     script_dir = os.path.dirname(os.path.abspath(__file__))
     output_path = os.path.join(script_dir, output_filename)
-    estimated_rows = len(CASES) * num_samples_per_case
+    estimated_rows = len(CASES) * num_samples_per_case * 4
 
     print(f"Generating F2L dataset with {num_samples_per_case} samples per case...")
     print(f"Estimated rows: {estimated_rows}")
