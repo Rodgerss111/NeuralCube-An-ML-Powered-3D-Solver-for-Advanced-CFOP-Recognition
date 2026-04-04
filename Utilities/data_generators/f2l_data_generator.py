@@ -54,7 +54,9 @@ CASES = {
     "F2L_41": "R U' R' d R' U2 R U R' U2 R",
     # EXTRACTION CASES: AI sees a trapped piece and outputs the command to free it.
     "ACTION_EXTRACT_RIGHT": "R U' R'",  # Setup puts piece in bottom-right slot
-    "ACTION_EXTRACT_FRONT": "F' U F"    # Setup puts piece in bottom-front slot
+    "ACTION_EXTRACT_FRONT": "F' U F",    # Setup puts piece in bottom-front slot
+    # NEW: The Flipped Edge extraction case
+    "ACTION_EXTRACT_FLIPPED": "R U R' F R' F' R"
     
 }
 
