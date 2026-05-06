@@ -9,14 +9,68 @@ const PALETTE = {
   Orange: '#FFA500', Green: '#008000', Blue: '#0000FF'
 };
 
-const COLOR_TO_INT = {
-  '#FFFFFF': 0, // White (Bottom)
-  '#FFFF00': 1, // Yellow (Top)
-  '#FFA500': 2, // Orange (Left)
-  '#FF0000': 3, // Red (Right)
-  '#0000FF': 4, // Blue (Front)
-  '#008000': 5  // Green (Back)
+
+// The 8 F2L piece identities (color sets, not positions)
+const F2L_PIECES = {
+  FR: {
+    corner: new Set([2, 4, 0]), // Red + Blue + White
+    edge:   new Set([2, 4])     // Red + Blue
+  },
+  FL: { corner: new Set([3, 4, 0]), edge: new Set([3, 4]) }, // Orange + Blue + White
+  BR: { corner: new Set([2, 5, 0]), edge: new Set([2, 5]) }, // Red + Green + White
+  BL: { corner: new Set([3, 5, 0]), edge: new Set([3, 5]) }, // Orange + Green + White
 };
+
+// Given the 54-int array, find where a piece is by its color identity
+const _findPiece = (intStickers, colorSet) => {
+  // Corner positions: groups of 3 sticker indices
+  const CORNER_GROUPS = [
+    [0,20,38],  // UFL
+    [2,27,47],  // UFR  ← target for FR corner when in U
+    [6,18,36],  // UBL  (misnomer: actually ULF in standard, depends on your face order)
+    [8,29,45],  // UBR
+    [9,19,41],  // DFL
+    [11,30,44], // DFR  ← target slot
+    [15,21,39], // DBL
+    [17,32,42], // DBR
+  ];
+  const EDGE_GROUPS = [
+    [1,37],[3,19],[5,28],[7,46], // U edges
+    [10,40],[12,21],[14,30],[16,48], // D edges (approx)
+    [23,34],[25,43],[32,52],[41,50], // Middle layer
+  ];
+
+  for (const group of [...CORNER_GROUPS, ...EDGE_GROUPS]) {
+    const colors = new Set(group.map(i => intStickers[i]));
+    // Check if the piece's colors match
+    if ([...colorSet].every(c => colors.has(c)) && colors.size === colorSet.size) {
+      return group; // Return the indices where it currently lives
+    }
+  }
+  return null;
+};
+
+// App.jsx — corrected COLOR_TO_INT
+const COLOR_TO_INT = {
+  '#FFFFFF': 0, // White  (D face center) → 0
+  '#FFFF00': 1, // Yellow (U face center) → 1
+  '#FF0000': 2, // Red    (R face center) → 2  ✅ fixed
+  '#FFA500': 3, // Orange (L face center) → 3  ✅ fixed
+  '#0000FF': 4, // Blue   (F face center) → 4
+  '#008000': 5  // Green  (B face center) → 5
+};
+
+const MOVE_LABELS = new Set([
+  'U', "U'", 'U2',
+  'D', "D'", 'D2',
+  'L', "L'", 'L2',
+  'R', "R'", 'R2',
+  'F', "F'", 'F2',
+  'B', "B'", 'B2',
+  'y', "y'", 'y2'
+]);
+
+const isMoveLabel = (label) => MOVE_LABELS.has(label || '');
 
 const extractOrderedStickers = (ref) => {
   const state = ref.current;
@@ -131,17 +185,21 @@ function App() {
     
     const highestConfidence = Math.max(...probabilities);
     const predictedIndex = probabilities.indexOf(highestConfidence);
-    const predictedLabel = labelMap[predictedIndex.toString()];
+    const predictedLabel = labelMap[predictedIndex.toString()] || 'UNKNOWN';
 
     // 2. THE STATE MACHINE LOGIC
-    if (highestConfidence < 0.99) {
+    if (highestConfidence < 0.65) {
       setCurrentPrediction(`Confidence too low: Expected ${predictedLabel} (${(highestConfidence * 100).toFixed(2)}%)`);
+    } else if (predictedLabel === 'F2L_SOLVED' || predictedLabel === 'F2L_0_SOLVED') {
+      setCurrentPrediction(`✓ Front-Right slot is solved! Rotate cube to next slot.`);
+    } else if (isMoveLabel(predictedLabel)) {
+      setCurrentPrediction(`Next move: ${predictedLabel} (${(highestConfidence * 100).toFixed(1)}%)`);
     } else if ((predictedLabel || '').startsWith("ACTION_EXTRACT")) {
       // If the AI recognizes a trapped piece, it issues an extraction command!
       setCurrentPrediction(`Trapped Piece Detected! Command: ${predictedLabel} (${(highestConfidence * 100).toFixed(2)}%)`);
       // TODO: In the future, trigger a virtual 3D animation here to extract the piece automatically.
     } else {
-      setCurrentPrediction(`Predicted Case: ${predictedLabel} (${(highestConfidence * 100).toFixed(2)}%)`);
+      setCurrentPrediction(`Algorithm: ${predictedLabel} (${(highestConfidence * 100).toFixed(1)}%)`);
     }
 
     inputTensor.dispose();
