@@ -63,7 +63,7 @@ Cross edges:
 """
 
 import numpy as np
-from cube.state import CubeState, SOLVED_STATE
+from .state import CubeState, SOLVED_STATE
 
 # ── Facelet groups ────────────────────────────────────────────────────────────
 

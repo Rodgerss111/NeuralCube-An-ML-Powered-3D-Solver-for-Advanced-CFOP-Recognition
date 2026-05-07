@@ -14,7 +14,7 @@ since they cancel out and produce shallower-than-expected scrambles.
 
 import random
 import numpy as np
-from cube.state import CubeState, MOVE_NAMES
+from ..cube.state import CubeState, MOVE_NAMES
 
 
 # Moves grouped by face — used to avoid consecutive same-face moves
