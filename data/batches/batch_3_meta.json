@@ -1,0 +1,18 @@
+{
+  "batch_id": 3,
+  "status": "complete",
+  "samples": 50000,
+  "config": {
+    "samples": 50000,
+    "min_depth": 8,
+    "max_depth": 10,
+    "seed": 3000
+  },
+  "x_shape": [
+    50000,
+    324
+  ],
+  "y_shape": [
+    50000
+  ]
+}

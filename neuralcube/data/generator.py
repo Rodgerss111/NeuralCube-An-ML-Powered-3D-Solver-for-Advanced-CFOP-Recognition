@@ -63,10 +63,10 @@ from ..cube.f2l_checker import is_f2l_solved
 BATCH_DIR = "data/batches"
 
 BATCH_CONFIG = {
-    1: {"samples": 50_000, "min_depth":  1, "max_depth":  4, "seed": 1000},
-    2: {"samples": 50_000, "min_depth":  5, "max_depth":  7, "seed": 2000},
-    3: {"samples": 50_000, "min_depth":  8, "max_depth": 10, "seed": 3000},
-    4: {"samples": 50_000, "min_depth": 11, "max_depth": 14, "seed": 4000},
+    1: {"samples": 50_000, "min_depth":  1, "max_depth":  4, "seed": 1000, "bfs_limit": 6},
+    2: {"samples": 50_000, "min_depth":  5, "max_depth":  7, "seed": 2000, "bfs_limit": 0},
+    3: {"samples": 50_000, "min_depth":  8, "max_depth": 10, "seed": 3000, "bfs_limit": 0},
+    4: {"samples": 50_000, "min_depth": 11, "max_depth": 14, "seed": 4000, "bfs_limit": 0},
 }
 
 CHECKPOINT_EVERY = 5_000   # Save partial results every N samples
