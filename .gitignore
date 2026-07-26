@@ -1,0 +1,17 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv39/
+.venv/
+venv/
+
+# Editor settings
+.vscode/
+node_modules
+node_modules
+node_modules
+node_modules
+node_modules
