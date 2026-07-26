@@ -1,5 +1,5 @@
 
-  NEURALCUBE  
+  ## NEURALCUBE  
   F2L Neural Solver — Product Requirements Document  
 
 Prepared by:  Rod
@@ -9,7 +9,7 @@ Date:  July 2026
 Status:    IN DEVELOPMENT  
 
  
-1. Executive Summary
+### 1. Executive Summary
 
 NeuralCube is a browser-based Rubik's Cube F2L (First Two Layers) solver that uses a neural network as its primary reasoning engine, backed by a deterministic 41-case rule-based fallback and a Kociemba two-phase algorithm as a final guarantee. The project is a side project and portfolio showcase built by a Computer Engineering student specialising in Embedded Systems, demonstrating the convergence of machine learning, algorithm design, and edge AI deployment.
 
@@ -24,7 +24,8 @@ Current Status (July 2026)
 ▸  200,000 training samples generated across 4 depth-stratified batches
 ▸  Frontend: not yet started
  
-2. Problem Statement
+
+### 2. Problem Statement
 
 The Gap in Existing Solvers
 Most AI Rubik's Cube solvers treat the puzzle as a pure optimisation problem — find the shortest path to solved, report moves, done. Tools like DeepCubeA, Kociemba, and AlphaZero-style solvers are technically impressive but share two common limitations:
@@ -43,7 +44,7 @@ Cumulative Error Spiral	92% per-move accuracy × 15 moves = 29% chance of perfec
 NeuralCube's Answer
 NeuralCube addresses all four failure modes through its cascading pipeline: loop detection aborts infinite cycles early, cross-guard filters moves that would break the already-solved cross, and two deterministic fallback phases guarantee a correct solution is always returned.
  
-3. Goals & Success Metrics
+### 3. Goals & Success Metrics
 
 Primary Goals
 ▸  Train a neural network that solves F2L states in under 20 moves for 70%+ of depth 1–10 scrambles
@@ -61,7 +62,7 @@ API response time	< 500 ms	Post-training
 TF.js inference (browser)	< 100 ms	Frontend phase
 Dataset size	200,000	Complete ✓
  
-4. Tech Stack
+### 4. Tech Stack
 
 Layer	Technology	Purpose
 Cube Engine	Python / NumPy	54-facelet state, 18 HTM moves, F2L checker
@@ -81,8 +82,8 @@ Key Design Decisions
 ▸  Checkpoint every 5,000 samples — crash-safe; resume without restarting batch
 ▸  Beam search width 3 in NN inference — better than greedy, cheaper than full BFS
  
-5. System Architecture
-
+### 5. System Architecture
+```
 Solver Pipeline
 Requests enter POST /solve and cascade through three phases:
 
@@ -125,16 +126,16 @@ POST	/solve	Full cascading pipeline — NN → rules → Kociemba
 POST	/validate	Validate cube state without solving
 POST	/solve/nn	NN phase only — for benchmarking model in isolation
 POST	/solve/rules	Rule-based only — deterministic, no model required
- 
-6. Data Pipeline
-
+```
+### 6. Data Pipeline
+```
 Batch Configuration
 Batch	Samples	Depth Range	Seed	BFS Limit	Status
 1	50,000	1–4	1000	6	✓ Complete
 2	50,000	5–7	2000	0 (heuristic)	✓ Complete
 3	50,000	8–10	3000	0 (heuristic)	✓ Complete
 4	50,000	11–14	4000	0 (heuristic)	✓ Complete
-
+```
 Labeling Strategy
 Depth	Labeler	Quality	Speed
 1–6	BFS (limit 6)	Optimal — guaranteed shortest path	Fast (few million nodes)
@@ -143,10 +144,10 @@ Depth	Labeler	Quality	Speed
 2-ply Heuristic (Option C)
 The 2-ply heuristic evaluates all 18×18 = 324 (move1, move2) pairs and returns the move1 whose 2-step outcome has the highest composite score. This correctly identifies setup moves — moves that appear neutral at ply-1 but unlock a much better state at ply-2. Score = slots_solved × 1000 + cross_intact × 500 + correct_facelets × 1.
  
-7. Project Folder Structure
+### 7. Project Folder Structure
 
 Visual directory tree (ASCII) with descriptions of what each folder contains:
-
+```
 neuralcube/
 ├── cube/                   ← Core cube physics layer
 │   ├── __init__.py
@@ -210,7 +211,7 @@ neuralcube/
 ├── requirements.txt        ← Python dependencies: numpy tensorflow fastapi
 │                              uvicorn pydantic tqdm kociemba
 └── README.md               ← Setup, batch run order, API docs, color encoding
-
+```
 Folder Responsibilities at a Glance
 Folder	Contains	Can run without…
 cube/	Physics — state representation and move logic	Everything else
@@ -220,7 +221,7 @@ solver/	Intelligence — NN + rules + Kociemba + pipeline	api/ (call directly)
 eval/	Measurement — solve rate and efficiency benchmarks	api/
 api/	Interface — FastAPI REST server for frontend consumption	Nothing (top-level)
  
-8. User Experience
+### 8. User Experience
 
 Target Users
 ▸  Rubik's Cube enthusiasts who want to understand F2L, not just get a solution
@@ -242,7 +243,7 @@ UX Principles
 ▸  Progressive disclosure — basic mode shows just moves; advanced mode shows slot-by-slot breakdown
 ▸  Edge-first — TF.js inference runs in the browser; API fallback only if model fails to load
 ▸  Mobile-friendly — 3D cube must be usable on touch devices
-
+```
 API Response to Frontend
 {
   "moves":        ["R", "U", "R'", "U'", "F'", "U", "F"],
@@ -258,8 +259,8 @@ API Response to Frontend
     "f2l_complete":  true
   }
 }
- 
-9. Progress Tracker
+```
+### 9. Progress Tracker
 
 Component	Task	Status
 Cube Engine	54-facelet state, 18 HTM moves, one-hot encoder	✓ Done
@@ -283,7 +284,7 @@ Frontend	React + Three.js 3D cube visualiser	— Planned
 Frontend	TF.js model export + client-side inference	— Planned
 Frontend	Move animation + slot-by-slot breakdown	— Planned
  
-10. Risks & Mitigations
+### 10. Risks & Mitigations
 
 Risk	Likelihood	Impact	Mitigation
 NN solve rate below 70% after training	Medium	Medium	Rule-based fallback guarantees 100% solve rate regardless; NN is an enhancement not a requirement
