@@ -26,11 +26,11 @@ import random
 from collections import defaultdict
 from tqdm import tqdm
 
-from cube.state import CubeState
-from cube.f2l_checker import is_f2l_solved
-from data.scrambler import scramble
-from solver.f2l_case_solver import solve_f2l
-from solver.pipeline import solve
+from backend.neuralcube.cube.state import CubeState
+from backend.neuralcube.cube.f2l_checker import is_f2l_solved
+from backend.neuralcube.data.scrambler import scramble
+from backend.neuralcube.solver.f2l_case_solver import solve_f2l
+from backend.neuralcube.solver.pipeline import solve
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -177,7 +177,7 @@ if __name__ == "__main__":
         r = benchmark_rules(args.samples, args.min_depth, args.max_depth, args.seed)
         print_report(r)
     else:
-        from model.network import load_model
+        from backend.neuralcube.model.network import load_model
         print(f"Loading model from {args.model}...")
         model = load_model(args.model)
 

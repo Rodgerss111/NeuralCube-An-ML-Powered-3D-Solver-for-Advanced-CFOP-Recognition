@@ -11,8 +11,8 @@ Improvements over the basic greedy loop:
 """
 
 import numpy as np
-from cube.state import CubeState, MOVE_NAMES
-from cube.f2l_checker import is_f2l_solved, is_cross_solved
+from backend.neuralcube.cube.state import CubeState, MOVE_NAMES
+from backend.neuralcube.cube.f2l_checker import is_f2l_solved, is_cross_solved
 
 # Cross facelets that must not change (from f2l_checker.py)
 CROSS_INDICES = [49, 46, 25, 50, 34, 52, 43, 48, 16]
@@ -33,7 +33,7 @@ def _breaks_cross(cube: CubeState, move: str) -> bool:
     for idx in CROSS_INDICES:
         if new_state.facelets[idx] != cube.facelets[idx]:
             # Cross facelet changed — only acceptable if it stays the correct color
-            from cube.state import SOLVED_STATE
+            from backend.neuralcube.cube.state import SOLVED_STATE
             if new_state.facelets[idx] != SOLVED_STATE[idx]:
                 return True
     return False

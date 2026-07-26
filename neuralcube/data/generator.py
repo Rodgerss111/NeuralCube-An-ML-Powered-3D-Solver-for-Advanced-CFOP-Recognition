@@ -522,7 +522,7 @@ Examples:
 
         print(f"Legacy mode: generating {n:,} samples, depth {lo}–{hi}...")
 
-        from data.scrambler import scramble as do_scramble
+        from backend.neuralcube.data.scrambler import scramble as do_scramble
         X_list, y_list, skipped = [], [], 0
 
         for _ in tqdm(range(n * 2), desc="Generating"):

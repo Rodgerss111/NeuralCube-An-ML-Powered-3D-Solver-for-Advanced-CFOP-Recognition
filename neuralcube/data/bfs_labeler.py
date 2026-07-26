@@ -33,8 +33,8 @@ Cost comparison:
 """
  
 from collections import deque
-from cube.state import CubeState, MOVE_NAMES, SOLVED_STATE
-from cube.f2l_checker import is_f2l_solved, count_solved_slots, is_cross_solved
+from backend.neuralcube.cube.state import CubeState, MOVE_NAMES, SOLVED_STATE
+from backend.neuralcube.cube.f2l_checker import is_f2l_solved, count_solved_slots, is_cross_solved
  
 # BFS depth limit — states deeper than this use 2-ply heuristic
 BFS_DEPTH_LIMIT = 6

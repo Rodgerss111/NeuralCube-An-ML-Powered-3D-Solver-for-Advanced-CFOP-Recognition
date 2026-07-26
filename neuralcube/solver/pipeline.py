@@ -12,12 +12,12 @@ The final state is always verified before returning.
 """
 
 import time
-from cube.state import CubeState
-from cube.f2l_checker import is_f2l_solved, is_cross_solved, f2l_progress
+from backend.neuralcube.cube.state import CubeState
+from backend.neuralcube.cube.f2l_checker import is_f2l_solved, is_cross_solved, f2l_progress
 
-from solver.nn_solver import nn_solve
-from solver.f2l_case_solver import solve_f2l
-from solver.kociemba_solver import kociemba_solve
+from backend.neuralcube.solver.nn_solver import nn_solve
+from backend.neuralcube.solver.f2l_case_solver import solve_f2l
+from backend.neuralcube.solver.kociemba_solver import kociemba_solve
 
 
 def solve(

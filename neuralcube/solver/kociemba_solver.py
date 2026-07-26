@@ -19,7 +19,7 @@ Our facelet indices use:
 Kociemba string order: U1-U9, R1-R9, F1-F9, D1-D9, L1-L9, B1-B9
 """
 
-from cube.state import CubeState, SOLVED_STATE
+from backend.neuralcube.cube.state import CubeState, SOLVED_STATE
 
 # Kociemba face letter for each color
 _COLOR_TO_FACE = {0: "U", 1: "L", 2: "F", 3: "R", 4: "B", 5: "D"}

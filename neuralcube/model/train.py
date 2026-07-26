@@ -22,8 +22,8 @@ import tensorflow as tf
 from tensorflow import keras
 from typing import List
 
-from data.generator import load_dataset, build_dataset, save_dataset
-from model.network import build_model, model_summary
+from backend.neuralcube.data.generator import load_dataset, build_dataset, save_dataset
+from backend.neuralcube.model.network import build_model, model_summary
 
 
 def train(

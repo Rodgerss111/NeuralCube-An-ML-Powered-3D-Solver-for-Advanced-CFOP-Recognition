@@ -33,11 +33,11 @@ from contextlib import asynccontextmanager
 from typing import Optional
 from collections import Counter
 
-from cube.state import CubeState, MOVE_NAMES
-from cube.f2l_checker import is_f2l_solved, is_cross_solved, f2l_progress
-from solver.pipeline import solve
-from solver.f2l_case_solver import solve_f2l
-from solver.nn_solver import nn_solve
+from backend.neuralcube.cube.state import CubeState, MOVE_NAMES
+from backend.neuralcube.cube.f2l_checker import is_f2l_solved, is_cross_solved, f2l_progress
+from backend.neuralcube.solver.pipeline import solve
+from backend.neuralcube.solver.f2l_case_solver import solve_f2l
+from backend.neuralcube.solver.nn_solver import nn_solve
 
 # ── Config ────────────────────────────────────────────────────────────────────
 MODEL_PATH = os.environ.get("MODEL_PATH",   "model/saved/f2l_model.h5")
@@ -51,7 +51,7 @@ _model = None
 async def lifespan(app: FastAPI):
     global _model
     if os.path.exists(MODEL_PATH):
-        from model.network import load_model
+        from backend.neuralcube.model.network import load_model
         print(f"Loading model from {MODEL_PATH}...")
         _model = load_model(MODEL_PATH)
         print("Model loaded.")

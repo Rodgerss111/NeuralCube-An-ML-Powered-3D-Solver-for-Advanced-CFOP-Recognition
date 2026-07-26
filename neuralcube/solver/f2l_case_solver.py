@@ -31,8 +31,8 @@ Strategy:
   for all four slots via U-face rotations.
 """
 
-from cube.state import CubeState, MOVE_NAMES
-from cube.f2l_checker import is_f2l_solved, is_slot_solved, is_cross_solved
+from backend.neuralcube.cube.state import CubeState, MOVE_NAMES
+from backend.neuralcube.cube.f2l_checker import is_f2l_solved, is_slot_solved, is_cross_solved
 
 MAX_SLOT_ATTEMPTS = 20   # Safety cap per slot
 
